@@ -1,5 +1,0 @@
-python-dotenv>=1.0
-
-fastapi[standard]>=0.110,<1.0
-
-httpx
