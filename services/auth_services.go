@@ -12,12 +12,11 @@ func LoginUser(email, password string) (map[string]interface{}, error) {
 	currentUser, err := repositories.FindByEmail(email)
 	if err != nil {
 		return map[string]interface{}{"error": "User not found"}, err
-
 	}
 
 	// ver se da match a senha com a senha hasheada
 
-	isValidPass := middleware.CheckPasswordHash(password, currentUser.Password)
+	isValidPass := middleware.CheckPasswordHash(password, currentUser.PasswordHash)
 
 	if isValidPass != nil {
 		return map[string]interface{}{"error": "Invalid password"}, errors.New("invalid password")
