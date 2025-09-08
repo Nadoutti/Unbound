@@ -25,3 +25,22 @@ func Login(c *gin.Context) {
 	c.JSON(200, data)
 
 }
+
+func Register(c *gin.Context) {
+
+	var registerData models.Register
+
+	// veriico se o json esta batendo
+	if err := c.ShouldBindBodyWithJSON(&registerData); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	// chama o service de registro
+	data, err := services.RegisterUser(registerData.Email, registerData.PasswordHash, registerData.Nome, registerData.Phone)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(201, data)
+}
