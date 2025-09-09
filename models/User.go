@@ -17,9 +17,9 @@ type Login struct {
 }
 
 type Register struct {
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"passwordhash"`
-	Nome         string    `json:"nome"`
-	Phone        string    `json:"phone"`
-	CreatedAt    time.Time `json:"created_at"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	Nome      string    `json:"nome"`
+	Phone     string    `json:"phone"`
+	CreatedAt time.Time `json:"created_at"`
 }

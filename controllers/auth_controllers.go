@@ -37,7 +37,7 @@ func Register(c *gin.Context) {
 	}
 
 	// chama o service de registro
-	data, err := services.RegisterUser(registerData.Email, registerData.PasswordHash, registerData.Nome, registerData.Phone)
+	data, err := services.RegisterUser(registerData.Email, registerData.Password, registerData.Nome, registerData.Phone)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return

@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"hash"
 	"unbound/auth_data_processing/middleware"
 	"unbound/repositories"
 )
