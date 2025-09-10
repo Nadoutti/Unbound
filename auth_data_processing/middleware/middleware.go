@@ -2,13 +2,15 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Função para hashear a senha do usuário
@@ -37,9 +39,11 @@ func jwtTTL() time.Duration {
 
 // criando o token JWT
 
-func CreateJWT(userID, email string) (string, error) {
+func CreateJWT(userID, email string) (map[string]interface{}, error) {
+
 	secret := os.Getenv("JWT_SECRET")
 	issuer := os.Getenv("JWT_ISSUER")
+	expire := time.Now().Add(jwtTTL()).Unix()
 
 	if issuer == "" {
 		issuer = "myapp"
@@ -50,11 +54,21 @@ func CreateJWT(userID, email string) (string, error) {
 		"email": email,
 		"iss":   issuer,
 		"iat":   time.Now().Unix(),
-		"exp":   time.Now().Add(jwtTTL()).Unix(),
+		"exp":   expire,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(secret))
+
+	tokenString, err := token.SignedString([]byte(secret))
+	if err != nil {
+		log.Println("Error signing token:", err)
+		return nil, err
+	}
+
+	return map[string]interface{}{
+		"token":   tokenString,
+		"expires": expire,
+	}, nil
 
 }
 

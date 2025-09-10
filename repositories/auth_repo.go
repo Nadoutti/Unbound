@@ -32,6 +32,7 @@ func CreateUser(email, password, nome, phone string) (models.User, error) {
 		"password_hash": password,
 		"nome":          nome,
 		"phone":         phone,
+		"user_type":     "individual",
 		"created_at":    time.Now(),
 	}
 

@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"unbound/auth_data_processing/middleware"
+	"unbound/models"
 	"unbound/repositories"
 )
 
@@ -30,7 +31,9 @@ func LoginUser(email, password string) (map[string]interface{}, error) {
 		return map[string]interface{}{"error": "Could not create token"}, err
 	}
 
-	return map[string]interface{}{"token": token, "user": currentUser}, nil
+	// remover senha do usuario
+
+	return map[string]interface{}{"token": token, "user": models.Sanitize(&currentUser)}, nil
 }
 
 func RegisterUser(email, password, nome, phone string) (map[string]interface{}, error) {
