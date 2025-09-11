@@ -14,7 +14,7 @@ func main() {
 	r := gin.Default()
 
 	// Register routes
-	routes.RegisterAuthRoutes(r)
+	routes.SetupRouter(r)
 
 	r.Run() // listen and serve on
 

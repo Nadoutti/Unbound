@@ -36,7 +36,7 @@ func LoginUser(email, password string) (map[string]interface{}, error) {
 	return map[string]interface{}{"token": token, "user": models.Sanitize(&currentUser)}, nil
 }
 
-func RegisterUser(email, password, nome, phone string) (map[string]interface{}, error) {
+func RegisterUser(email, password, nome, phone, user_type string) (map[string]interface{}, error) {
 
 	// verificar a existencia do usuario
 
@@ -48,7 +48,7 @@ func RegisterUser(email, password, nome, phone string) (map[string]interface{}, 
 	// criar o usuario
 
 	hashedPassword, err := middleware.HashPassword(password)
-	newUser, err := repositories.CreateUser(email, hashedPassword, nome, phone)
+	newUser, err := repositories.CreateUser(email, hashedPassword, nome, phone, user_type)
 	if err != nil {
 		return map[string]interface{}{"error": "Could not create user"}, err
 	}
@@ -61,6 +61,6 @@ func RegisterUser(email, password, nome, phone string) (map[string]interface{}, 
 		return map[string]interface{}{"error": "Could not create token"}, err
 	}
 
-	return map[string]interface{}{"token": token, "user": newUser}, nil
+	return map[string]interface{}{"token": token, "user": models.Sanitize(&newUser)}, nil
 
 }

@@ -73,43 +73,68 @@ func CreateJWT(userID, email string) (map[string]interface{}, error) {
 }
 
 // verificando o token JWT
-
-func AuthMiddleware() gin.HandlerFunc {
+func JWTAuth(publicRoutes map[string]bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		auth := c.GetHeader("Authorization")
-		if auth == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
+		method := c.Request.Method
+		path := c.FullPath()
+		routeKey := fmt.Sprintf("%s %s", method, path)
+
+		// verificando se a rota e publica
+
+		if publicRoutes[routeKey] {
+			c.Next()
 			return
 		}
 
-		tokenString := strings.TrimPrefix(auth, "Bearer")
-		secret := os.Getenv("JWT_SECRET")
+		// exigindo autenticacao se nao for publica
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if token.Method != jwt.SigningMethodHS256 {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-			}
-			return secret, nil
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token nao fornecido"})
+			return
+		}
+
+		// pegando o token do header
+		tokenString := strings.Split(authHeader, " ")[1]
+		claims := jwt.MapClaims{}
+
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
 		if err != nil || !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token inválido"})
+			c.Abort()
 			return
 		}
 
-		claims, ok := token.Claims.(jwt.MapClaims)
+		// Verifica se o token expirou
+		exp, ok := claims["exp"].(float64)
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Formato do token inválido"})
+			c.Abort()
 			return
 		}
 
-		uid, ok := claims["sub"].(string)
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token subject"})
+		expirationTime := time.Unix(int64(exp), 0)
+		if expirationTime.Before(time.Now()) {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token expirado"})
+			c.Abort()
 			return
 		}
 
-		c.Set("userID", uid)
+		// pegando o id do ususario no token para colocar no contexto
+
+		var userID string
+		if sub, ok := claims["sub"].(string); ok {
+			userID = sub
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Formato do token inválido"})
+			c.Abort()
+			return
+		}
+
+		c.Set("userID", userID)
 		c.Next()
 
 	}

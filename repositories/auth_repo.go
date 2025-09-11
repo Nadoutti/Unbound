@@ -24,7 +24,7 @@ func FindByEmail(email string) (models.User, error) {
 	return user, nil
 }
 
-func CreateUser(email, password, nome, phone string) (models.User, error) {
+func CreateUser(email, password, nome, phone, user_type string) (models.User, error) {
 	supabase := db.GetSupabase()
 
 	newUser := map[string]interface{}{
@@ -32,7 +32,7 @@ func CreateUser(email, password, nome, phone string) (models.User, error) {
 		"password_hash": password,
 		"nome":          nome,
 		"phone":         phone,
-		"user_type":     "individual",
+		"user_type":     user_type,
 		"created_at":    time.Now(),
 	}
 

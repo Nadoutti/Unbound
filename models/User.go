@@ -25,6 +25,7 @@ type Register struct {
 	Password  string    `json:"password"`
 	Nome      string    `json:"nome"`
 	Phone     string    `json:"phone"`
+	UserType  string    `json:"user_type"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

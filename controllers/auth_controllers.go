@@ -26,6 +26,8 @@ func Login(c *gin.Context) {
 
 }
 
+// O registro para business e customer sao iguais porque eles colocam os mesmos dados iniciais
+
 func Register(c *gin.Context) {
 
 	var registerData models.Register
@@ -37,7 +39,7 @@ func Register(c *gin.Context) {
 	}
 
 	// chama o service de registro
-	data, err := services.RegisterUser(registerData.Email, registerData.Password, registerData.Nome, registerData.Phone)
+	data, err := services.RegisterUser(registerData.Email, registerData.Password, registerData.Nome, registerData.Phone, registerData.UserType)
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
