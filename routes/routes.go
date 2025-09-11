@@ -26,6 +26,12 @@ func SetupRouter(r *gin.Engine) {
 			// auth.POST("/logout", controllers.Logout)
 		}
 
+		// rotas KYB/KYC
+		kyc := r.Group("/kyb")
+		{
+			kyc.POST("/submit", controllers.SubmitKYB)
+		}
+
 	}
 
 }
