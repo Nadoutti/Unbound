@@ -73,7 +73,7 @@ func CreateJWT(userID, email string) (map[string]interface{}, error) {
 }
 
 // verificando o token JWT
-func JWTAuth(publicRoutes map[string]bool) gin.HandlerFunc {
+func JWTAuthentication(publicRoutes map[string]bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 		path := c.FullPath()
@@ -89,6 +89,7 @@ func JWTAuth(publicRoutes map[string]bool) gin.HandlerFunc {
 		// exigindo autenticacao se nao for publica
 
 		authHeader := c.GetHeader("Authorization")
+		log.Println("Teste")
 		if authHeader == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token nao fornecido"})
 			return
@@ -134,6 +135,7 @@ func JWTAuth(publicRoutes map[string]bool) gin.HandlerFunc {
 			return
 		}
 
+		log.Println(userID)
 		c.Set("userID", userID)
 		c.Next()
 

@@ -13,4 +13,6 @@ type KYBSubmission struct {
 	DocumentCountry string `json:"document_country"`
 }
 
-type KYBResponse struct{}
+type KYBResponse struct {
+	Status string `json:"status"`
+}

@@ -1,15 +1,18 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
+	"log"
 	"unbound/models"
 	"unbound/services"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SubmitKYB(c *gin.Context) {
 
 	var kybData models.KYBSubmission
 	userID, exists := c.Get("userID")
+	log.Println(userID)
 
 	if !exists {
 		c.JSON(401, gin.H{"error": "Unauthorized"})
@@ -17,7 +20,7 @@ func SubmitKYB(c *gin.Context) {
 	}
 
 	// veriico se o json esta batendo
-	if err := c.ShouldBindBodyWithJSON(&kybData); err != nil {
+	if err := c.ShouldBindJSON(&kybData); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid request"})
 		return
 	}

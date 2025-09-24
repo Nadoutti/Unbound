@@ -30,7 +30,7 @@ func CreateUser(email, password, nome, phone, user_type string) (models.User, er
 	newUser := map[string]interface{}{
 		"email":         email,
 		"password_hash": password,
-		"nome":          nome,
+		"name":          nome,
 		"phone":         phone,
 		"user_type":     user_type,
 		"created_at":    time.Now(),

@@ -7,19 +7,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
+
 func SetupRouter(r *gin.Engine) {
 
 	publicRoutes := map[string]bool{
 		"POST /api/v1/auth/register": true,
 		"POST /api/v1/auth/login":    true,
 	}
+	
 
 	api := r.Group("/api/v1")
-	api.Use(middleware.JWTAuth(publicRoutes))
+	api.Use(middleware.JWTAuthentication(publicRoutes))
 	{
 
 		// grupo de autenticacao
-		auth := r.Group("/auth")
+		auth := api.Group("/auth")
 		{
 			auth.POST("/register", controllers.Register)
 			auth.POST("/login", controllers.Login)
@@ -27,9 +30,9 @@ func SetupRouter(r *gin.Engine) {
 		}
 
 		// rotas KYB/KYC
-		kyc := r.Group("/kyb")
+		kyc := api.Group("/kyb")
 		{
-			kyc.POST("/submit", controllers.SubmitKYB)
+			kyc.POST("", controllers.SubmitKYB)
 		}
 
 	}

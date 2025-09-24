@@ -9,14 +9,14 @@ import (
 func SubmitKYB(kybData *models.KYBSubmission, userID string) (map[string]interface{}, error) {
 	// verificando se o business ja existe
 
-	_, err := repositories.FindBusByID(userID)
+	_, err := repositories.FindUserbyID(userID) 
 	if err != nil {
 		return map[string]interface{}{"error": "Business not found"}, errors.New("business not found")
 	}
 
 	// criando o business
 
-	newKYB, err := repositories.CreateCustomerBusiness(kybData)
+	newKYB, err := repositories.CreateCustomerBusiness(kybData, userID)
 
 	if err != nil {
 		return map[string]interface{}{"error": "Nao foi possivel criar a business"}, err
