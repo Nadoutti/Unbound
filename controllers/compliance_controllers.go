@@ -34,3 +34,30 @@ func SubmitKYB(c *gin.Context) {
 	c.JSON(201, data)
 
 }
+
+func SubmitKYC(c *gin.Context) {
+
+	var kycData models.KYCSubmission
+	userID, exists := c.Get("userID")
+	log.Println(userID)
+
+	if !exists {
+		c.JSON(401, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	// veriico se o json esta batendo
+	if err := c.ShouldBindJSON(&kycData); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	// chama o service de registro
+	data, err := services.SubmitKYC(&kycData, userID.(string))
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(201, data)
+
+}

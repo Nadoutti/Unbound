@@ -30,10 +30,16 @@ func SetupRouter(r *gin.Engine) {
 		}
 
 		// rotas KYB/KYC
-		kyc := api.Group("/kyb")
+		kyb := api.Group("/kyb")
 		{
-			kyc.POST("", controllers.SubmitKYB)
+			kyb.POST("", controllers.SubmitKYB)
 		}
+
+		kyc := api.Group("/kyc")
+		{
+			kyc.POST("", controllers.SubmitKYC)
+		}
+		
 
 	}
 

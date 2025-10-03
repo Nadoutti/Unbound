@@ -51,3 +51,32 @@ func CreateCustomerBusiness(kybData *models.KYBSubmission, userID string) (model
 
 	return createdBusiness, nil
 }
+
+func CreateCustomerIndividual(kycData *models.KYCSubmission, userID string) (models.KYCResponse, error) {
+	supabase := db.GetSupabase()
+
+	newBuss := map[string]interface{}{
+		"streetline_one":  kycData.StreetLineOne,
+		"streetline_two":  kycData.StreetLineOne,
+		"address_city":     kycData.AddressCity,
+		"address_country":  kycData.AddressCountry,
+		"postal_code":      kycData.PostalCode,
+		"document_type":    kycData.DocumentType,
+		"document_value":   kycData.DocumentNumber,
+		"document_country": kycData.DocumentCountry,
+		"user_id": userID,
+	}
+
+	var createdIndividual models.KYCResponse
+
+	_, err := supabase.From("business").
+		Insert(newBuss, false, "", "", "").
+		Single().
+		ExecuteTo(&createdIndividual)
+
+	if err != nil {
+		return models.KYCResponse{}, err
+	}
+
+	return createdIndividual, nil
+}

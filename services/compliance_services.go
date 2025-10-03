@@ -25,3 +25,23 @@ func SubmitKYB(kybData *models.KYBSubmission, userID string) (map[string]interfa
 	return map[string]interface{}{"created_cust_business": &newKYB}, nil
 
 }
+
+func SubmitKYC(kycData *models.KYCSubmission, userID string) (map[string]interface{}, error) {
+	// verificando se o business ja existe
+
+	_, err := repositories.FindUserbyID(userID) 
+	if err != nil {
+		return map[string]interface{}{"error": "Business not found"}, errors.New("business not found")
+	}
+
+	// criando o business
+
+	newKYB, err := repositories.CreateCustomerIndividual(kycData, userID)
+
+	if err != nil {
+		return map[string]interface{}{"error": "Nao foi possivel criar a business"}, err
+	}
+
+	return map[string]interface{}{"created_cust_business": &newKYB}, nil
+
+}
